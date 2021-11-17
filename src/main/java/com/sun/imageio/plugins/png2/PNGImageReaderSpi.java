@@ -46,12 +46,9 @@ public class PNGImageReaderSpi extends ImageReaderSpi {
 
     private static final String[] MIMETypes = { "image/png", "image/x-png" };
 
-    private static final String readerClassName =
-        "com.sun.imageio.plugins.png.PNGImageReader";
+    private static final String readerClassName = PNGImageReader.class.getName();
 
-    private static final String[] writerSpiNames = {
-        "com.sun.imageio.plugins.png.PNGImageWriterSpi"
-    };
+    private static final String[] writerSpiNames = null;
 
     public PNGImageReaderSpi() {
         super(vendorName,
@@ -67,7 +64,7 @@ public class PNGImageReaderSpi extends ImageReaderSpi {
               null, null,
               true,
               PNGMetadata.nativeMetadataFormatName,
-              "com.sun.imageio.plugins.png.PNGMetadataFormat",
+              PNGMetadataFormat.class.getName(),
               null, null
               );
     }

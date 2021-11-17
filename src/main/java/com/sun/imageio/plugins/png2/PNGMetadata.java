@@ -51,8 +51,7 @@ public class PNGMetadata extends IIOMetadata implements Cloneable {
     public static final String
         nativeMetadataFormatName = "javax_imageio_png_1.0";
 
-    protected static final String nativeMetadataFormatClassName
-        = "com.sun.imageio.plugins.png.PNGMetadataFormat";
+    protected static final String nativeMetadataFormatClassName = PNGMetadataFormat.class.getName();
 
     // Color types for IHDR chunk
     static final String[] IHDR_colorTypeNames = {
