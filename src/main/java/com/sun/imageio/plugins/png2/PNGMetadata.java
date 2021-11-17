@@ -23,7 +23,7 @@
  * questions.
  */
 
-package com.sun.imageio.plugins.png;
+package com.sun.imageio.plugins.png2;
 
 import java.awt.image.ColorModel;
 import java.awt.image.IndexColorModel;
