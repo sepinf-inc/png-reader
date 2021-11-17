@@ -30,6 +30,7 @@ import java.util.Locale;
 import java.util.Iterator;
 import javax.imageio.ImageReader;
 import javax.imageio.spi.ImageReaderSpi;
+import javax.imageio.spi.ServiceRegistry;
 import javax.imageio.metadata.IIOMetadataFormat;
 import javax.imageio.metadata.IIOMetadataFormatImpl;
 import javax.imageio.stream.ImageInputStream;
@@ -96,5 +97,21 @@ public class PNGImageReaderSpi extends ImageReaderSpi {
 
     public ImageReader createReaderInstance(Object extension) {
         return new PNGImageReader(this);
+    }
+
+    @Override
+    public void onRegistration(final ServiceRegistry registry, final Class<?> category) {
+        Iterator<ImageReaderSpi> iterator = registry.getServiceProviders(ImageReaderSpi.class, false);
+        while (iterator.hasNext()) {
+            ImageReaderSpi spi = iterator.next();
+            if (spi != this) {
+                for (String ext : spi.getFileSuffixes()) {
+                    if ("png".equals(ext)) {
+                        registry.setOrdering(ImageReaderSpi.class, this, spi);
+                        break;
+                    }
+                }
+            }
+        }
     }
 }
