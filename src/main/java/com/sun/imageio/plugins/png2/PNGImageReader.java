@@ -768,43 +768,8 @@ public class PNGImageReader extends ImageReader {
                 switch (chunkType) {
                 case IDAT_TYPE:
                     // If chunk type is 'IDAT', we've reached the image data.
-                    if (imageStartPosition == -1L) {
-                        /*
-                         * The PNG specification mandates that if colorType is
-                         * PNG_COLOR_PALETTE then the PLTE chunk should appear
-                         * before the first IDAT chunk.
-                         */
-                        if (colorType == PNG_COLOR_PALETTE &&
-                            !(metadata.PLTE_present))
-                        {
-                            throw new IIOException("Required PLTE chunk"
-                                    + " missing");
-                        }
-                        /*
-                         * PNGs may contain multiple IDAT chunks containing
-                         * a portion of image data. We store the position of
-                         * the first IDAT chunk and continue with iteration
-                         * of other chunks that follow image data.
-                         */
-                        imageStartPosition = stream.getStreamPosition() - 8;
-                    }
-                    // Move to the CRC byte location.
-                    stream.skipBytes(chunkLength);
-                    break;
-                case IEND_TYPE:
-                    /*
-                     * If the chunk type is 'IEND', we've reached end of image.
-                     * Seek to the first IDAT chunk for subsequent decoding.
-                     */
-                    stream.seek(imageStartPosition);
-
-                    /*
-                     * flushBefore discards the portion of the stream before
-                     * the indicated position. Hence this should be used after
-                     * we complete iteration over available chunks including
-                     * those that appear after the IDAT.
-                     */
-                    stream.flushBefore(stream.getStreamPosition());
+                    stream.skipBytes(-8);
+                    imageStartPosition = stream.getStreamPosition();
                     break loop;
                 case PLTE_TYPE:
                     parse_PLTE_chunk(chunkLength);
@@ -886,6 +851,7 @@ public class PNGImageReader extends ImageReader {
                     throw new IIOException("Failed to read a chunk of type " +
                             chunkType);
                 }
+                stream.flushBefore(stream.getStreamPosition());
             }
         } catch (IOException e) {
             throw new IIOException("Error reading PNG metadata", e);
